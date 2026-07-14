@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* Custom breakpoint for very small phones (Tailwind v4 CSS-first theme) */
+@theme {
+  --breakpoint-xs: 22.5rem; /* 360px */
+}
+
+/* 
+  By using @utility, Tailwind v4 automatically registers 'no-scrollbar' 
+  to support hover, active, and media queries out-of-the-box.
+*/
+@utility no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
