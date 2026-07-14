@@ -186,7 +186,18 @@ export const songs = [
     audioUrl: "/music-phonk/slowed/loucura-letal-slowed.mp3",
     coverUrl: "/images/slowed/loucura-letal-slowed.jpg",
   },
+  {
+    id: "24",
+    title: "TRILLIUM HARDTEKK",
+    artist: "Bearn",
+    category: "Hardtekk",
+    audioUrl: "/music-phonk/hardtekk/trillium.mp3",
+    coverUrl: "/images/hardtekk/trillium-hardtekk.png",
+  },
 ];
 
 // Ordered list of categories, derived from the data above (no duplicates).
-export const categories = ["All", ...new Set(songs.map((song) => song.category))];
+export const categories = [
+  "All",
+  ...new Set(songs.map((song) => song.category)),
+];
