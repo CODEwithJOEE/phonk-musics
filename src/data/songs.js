@@ -60,11 +60,11 @@ export const songs = [
   },
   {
     id: "8",
-    title: "PPAP HARDTEKK (Slowed)",
-    artist: "Unknown Artist",
+    title: "TRILLIUM HARDTEKK",
+    artist: "Bearn",
     category: "Hardtekk",
-    audioUrl: "/music-phonk/hardtekk/ppap-hardtekk-slowed.mp3",
-    coverUrl: "/images/hardtekk/ppap-hardtekk-slowed.jpg",
+    audioUrl: "/music-phonk/hardtekk/trillium.mp3",
+    coverUrl: "/images/hardtekk/trillium-hardtekk.png",
   },
   {
     id: "9",
@@ -188,11 +188,11 @@ export const songs = [
   },
   {
     id: "24",
-    title: "TRILLIUM HARDTEKK",
-    artist: "Bearn",
+    title: "PPAP HARDTEKK (Slowed)",
+    artist: "Unknown Artist",
     category: "Hardtekk",
-    audioUrl: "/music-phonk/hardtekk/trillium.mp3",
-    coverUrl: "/images/hardtekk/trillium-hardtekk.png",
+    audioUrl: "/music-phonk/hardtekk/ppap-hardtekk-slowed.mp3",
+    coverUrl: "/images/hardtekk/ppap-hardtekk-slowed.jpg",
   },
 ];
 
