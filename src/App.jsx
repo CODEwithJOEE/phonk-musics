@@ -31,10 +31,13 @@ export default function App() {
     });
   }, [searchQuery, showOnlyFavorites, favorites, selectedCategory]);
 
+  // FIXED: Destructured 'volume' and 'setVolume' from the hook so they are defined!
   const {
     audioRef,
     currentSong,
     isPlaying,
+    volume,
+    setVolume,
     playSong,
     playNext,
     playPrevious,
@@ -91,6 +94,8 @@ export default function App() {
         currentSong={currentSong}
         isPlaying={isPlaying}
         hasMultipleTracks={filteredSongs.length > 1}
+        volume={volume}
+        onVolumeChange={setVolume}
         onTogglePlayPause={togglePlayPause}
         onNext={playNext}
         onPrevious={playPrevious}

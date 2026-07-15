@@ -1,18 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Owns playback state and wires it up to:
- *  - the actual <audio> element (via audioRef)
- *  - the OS-level Media Session API, so lock-screen / notification-shade /
- *    headphone controls and background playback work like a native app.
- *
- * `playlist` is the list playback should step through with next/previous —
- * pass the currently *filtered* song list so skip controls stay in sync
- * with whatever the user is looking at.
+ * Owns playback state and wires it up to the actual <audio> element.
+ * Now manages a synchronized volume level state.
  */
 export function useAudioPlayer(playlist) {
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.8); // Default volume at 80%
   const audioRef = useRef(null);
 
   // Keep the <audio> element's play/pause state in sync with isPlaying.
@@ -20,8 +15,6 @@ export function useAudioPlayer(playlist) {
     if (!currentSong || !audioRef.current) return;
 
     if (isPlaying) {
-      // play() returns a promise that rejects if playback is interrupted
-      // (e.g. user skips tracks quickly) — swallow that expected case.
       audioRef.current.play().catch((err) => {
         console.warn("Playback interrupted:", err);
       });
@@ -29,6 +22,13 @@ export function useAudioPlayer(playlist) {
       audioRef.current.pause();
     }
   }, [isPlaying, currentSong]);
+
+  // Synchronize volume adjustments with the HTML5 audio element
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume, currentSong]); // Runs on volume changes or when a new track mounts
 
   const playSong = useCallback(
     (song) => {
@@ -65,8 +65,7 @@ export function useAudioPlayer(playlist) {
     setIsPlaying((prev) => !prev);
   }, []);
 
-  // Media Session: lets lock screen / notification shade / earbuds control
-  // playback, and shows the track's title, artist and artwork there too.
+  // Media Session metadata matching native platform features
   useEffect(() => {
     if (!("mediaSession" in navigator) || !currentSong) return;
 
@@ -91,6 +90,8 @@ export function useAudioPlayer(playlist) {
     audioRef,
     currentSong,
     isPlaying,
+    volume,
+    setVolume,
     playSong,
     playNext,
     playPrevious,
