@@ -3,22 +3,25 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      // Only real files that exist in /public.
-      includeAssets: ["favicon.ico", "icons/apple-touch-icon.png"],
+      // Include your main UI assets here
+      includeAssets: [
+        "favicon.ico",
+        "icons/apple-touch-icon.png",
+        "background-image.png",
+      ],
       manifest: {
         name: "Phonk Hub",
         short_name: "PhonkHub",
         description: "Curated Underground Phonk Beats",
         theme_color: "#0b0b0b",
         background_color: "#0b0b0b",
-        display: "standalone", // Opens in a clean, app-like window when installed
+        display: "standalone",
         orientation: "portrait-primary",
         start_url: "/",
         scope: "/",
@@ -39,40 +42,33 @@ export default defineConfig({
             src: "icons/icon-512-maskable.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "maskable", // Lets phones shape the icon (circle/squircle/etc.)
+            purpose: "maskable",
           },
         ],
       },
       workbox: {
-        // App shell (JS/CSS/HTML) is precached automatically.
+        // 1. INCREASE CACHE LIMIT: Audio files are large. Workbox ignores files > 2MB by default.
+        maximumFileSizeToCacheInBytes: 150 * 1024 * 1024, // 150MB allowance
+
+        // 2. FORCE PRECACHING: Tells the app to download all audio/images straight away
+        globPatterns: [
+          "**/*.{js,css,html,ico,png,svg}",
+          "music-phonk/**/*.{mp3,wav}",
+          "images/**/*.{jpg,jpeg,png}",
+        ],
+
         runtimeCaching: [
           {
-            // Album art: cache-first, since covers never change once shipped.
-            urlPattern: ({ url }) => url.pathname.startsWith("/images/"),
-            handler: "CacheFirst",
-            options: {
-              cacheName: "phonk-images",
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-              },
-              cacheableResponse: { statuses: [0, 200] },
-            },
-          },
-          {
-            // Audio: cache-first with range-request support so seeking/
-            // scrubbing works correctly on cached (offline) tracks.
             urlPattern: ({ url }) => url.pathname.startsWith("/music-phonk/"),
             handler: "CacheFirst",
             options: {
               cacheName: "phonk-audio",
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
+                maxAgeSeconds: 60 * 60 * 24 * 90,
               },
-              // FIXED: Added 206 to status codes to support storing partial content chunks
               cacheableResponse: { statuses: [0, 200, 206] },
-              rangeRequests: true,
+              rangeRequests: true, // Crucial for Safari and media scrubbing
             },
           },
         ],
