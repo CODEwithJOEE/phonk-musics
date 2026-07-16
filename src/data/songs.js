@@ -194,6 +194,30 @@ export const songs = [
     audioUrl: "/music-phonk/hardtekk/ppap-hardtekk-slowed.mp3",
     coverUrl: "/images/hardtekk/ppap-hardtekk-slowed.jpg",
   },
+  {
+    id: "25",
+    title: "CANTO DE LUNA (SLOWED)",
+    artist: "Mafia",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/canto-de-luna-slowed.mp3",
+    coverUrl: "/images/slowed/canto-de-luna.jpg",
+  },
+  {
+    id: "26",
+    title: "MENTE MÁ",
+    artist: "Nakama",
+    category: "Funk Phonk",
+    audioUrl: "/music-phonk/funk-phonk/mente-ma.mp3",
+    coverUrl: "/images/funk-phonk/mente-ma.jpg",
+  },
+  {
+    id: "27",
+    title: "FUNK DO BOUNCE (SLOWED)",
+    artist: "Ariis",
+    category: "Funk Phonk",
+    audioUrl: "/music-phonk/funk-phonk/funk-do-bounce.mp3",
+    coverUrl: "/images/funk-phonk/funk-do-bounce.jpg",
+  },
 ];
 
 // Ordered list of categories, derived from the data above (no duplicates).
