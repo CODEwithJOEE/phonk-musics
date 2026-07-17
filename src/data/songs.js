@@ -218,6 +218,14 @@ export const songs = [
     audioUrl: "/music-phonk/funk-phonk/funk-do-bounce.mp3",
     coverUrl: "/images/funk-phonk/funk-do-bounce.jpg",
   },
+  {
+    id: "28",
+    title: "AMOR NA PRAIA (Ultra Slowed)",
+    artist: "Flame Runner",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/amor-na-praia-ultra-slowed.mp3",
+    coverUrl: "/images/slowed/amor-na-praia-ultra-slowed.jpg",
+  },
 ];
 
 // Ordered list of categories, derived from the data above (no duplicates).
