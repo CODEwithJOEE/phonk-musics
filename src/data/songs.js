@@ -226,6 +226,14 @@ export const songs = [
     audioUrl: "/music-phonk/slowed/amor-na-praia-ultra-slowed.mp3",
     coverUrl: "/images/slowed/amor-na-praia-ultra-slowed.jpg",
   },
+  {
+    id: "29",
+    title: "AMOR NA PRAIA (Ultra Slowed)",
+    artist: "h6itam",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/sigilo-slowed.mp3",
+    coverUrl: "/images/slowed/sigilo-slowed.jpg",
+  },
 ];
 
 // Ordered list of categories, derived from the data above (no duplicates).
