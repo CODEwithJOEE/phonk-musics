@@ -95,8 +95,8 @@ export const songs = [
     title: "MATADORA [Extended]",
     artist: "SUKA",
     category: "Funk Phonk",
-    audioUrl: "/music-phonk/funk-phonk/matadora-extended.mp3",
-    coverUrl: "/images/funk-phonk/matadora-extended.jpg",
+    audioUrl: "/music-phonk/funk-phonk/matadora.mp3",
+    coverUrl: "/images/funk-phonk/matadora.jpg",
   },
   {
     id: "13",
