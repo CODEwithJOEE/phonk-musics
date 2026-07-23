@@ -92,7 +92,7 @@ export const songs = [
   },
   {
     id: "12",
-    title: "MATADORA [Extended]",
+    title: "MATADORA",
     artist: "SUKA",
     category: "Funk Phonk",
     audioUrl: "/music-phonk/funk-phonk/matadora.mp3",
