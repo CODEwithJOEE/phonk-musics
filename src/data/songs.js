@@ -84,11 +84,11 @@ export const songs = [
   },
   {
     id: "11",
-    title: "TEENWXV [Extended]",
-    artist: "Unknown Artist",
+    title: "MALA FAMA",
+    artist: "teenwxv",
     category: "Drift Phonk",
-    audioUrl: "/music-phonk/drift-phonk/teenwxv-extended.mp3",
-    coverUrl: "/images/drift-phonk/teenwxv-extended.jpg",
+    audioUrl: "/music-phonk/drift-phonk/mala-fama.mp3",
+    coverUrl: "/images/drift-phonk/mala-fama.jpg",
   },
   {
     id: "12",
