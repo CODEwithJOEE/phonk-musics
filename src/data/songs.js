@@ -228,7 +228,7 @@ export const songs = [
   },
   {
     id: "29",
-    title: "AMOR NA PRAIA (Ultra Slowed)",
+    title: "SIGILO (Slowed)",
     artist: "h6itam",
     category: "Slowed",
     audioUrl: "/music-phonk/slowed/sigilo-slowed.mp3",
