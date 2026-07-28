@@ -164,11 +164,11 @@ export const songs = [
   },
   {
     id: "21",
-    title: "AVANGARD (SLOWED)",
-    artist: "LONOWN",
-    category: "Slowed",
-    audioUrl: "/music-phonk/slowed/avangard-slowed.mp3",
-    coverUrl: "/images/slowed/avangard-slowed.jpg",
+    title: "Supersonic",
+    artist: "The vibe guide",
+    category: "Funk Phonk",
+    audioUrl: "/music-phonk/funk-phonk/supersonic.mp3",
+    coverUrl: "/images/funk-phonk/montagem.jpg",
   },
   {
     id: "22",
@@ -233,6 +233,22 @@ export const songs = [
     category: "Slowed",
     audioUrl: "/music-phonk/slowed/sigilo-slowed.mp3",
     coverUrl: "/images/slowed/sigilo-slowed.jpg",
+  },
+  {
+    id: "30",
+    title: "AVANGARD (SLOWED)",
+    artist: "LONOWN",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/avangard-slowed.mp3",
+    coverUrl: "/images/slowed/avangard-slowed.jpg",
+  },
+  {
+    id: "31",
+    title: "Supersonic (Slowed)",
+    artist: "The vibe guide",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/supersonic-slowed.mp3",
+    coverUrl: "/images/slowed/montagem-slowed.jpg",
   },
 ];
 
