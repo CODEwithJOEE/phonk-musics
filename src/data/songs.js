@@ -261,7 +261,7 @@ export const songs = [
   {
     id: "33",
     title: "Blah (Slowed)",
-    artist: "DJ V12",
+    artist: "Nomi XD",
     category: "Slowed",
     audioUrl: "/music-phonk/slowed/blah-slowed.mp3",
     coverUrl: "/images/slowed/blah-slowed.jpg",
