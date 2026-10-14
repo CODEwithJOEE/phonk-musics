@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { songs, categories } from "./data/songs";
 import { useFavorites } from "./hooks/useFavorites";
 import { useAudioPlayer } from "./hooks/useAudioPlayer";
@@ -31,18 +31,44 @@ export default function App() {
     });
   }, [searchQuery, showOnlyFavorites, favorites, selectedCategory]);
 
-  // FIXED: Destructured 'volume' and 'setVolume' from the hook so they are defined!
   const {
     audioRef,
     currentSong,
     isPlaying,
     volume,
     setVolume,
+    shuffle,
+    toggleShuffle,
+    loop,
+    cycleLoop,
+    currentTime,
+    setCurrentTime,
+    duration,
+    setDuration,
+    seek,
     playSong,
     playNext,
     playPrevious,
     togglePlayPause,
+    handleEnded,
   } = useAudioPlayer(filteredSongs);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.target.tagName === "INPUT") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        togglePlayPause();
+      }
+      if (e.code === "ArrowRight") playNext();
+      if (e.code === "ArrowLeft") playPrevious();
+      if (e.code === "KeyS") toggleShuffle();
+      if (e.code === "KeyL") cycleLoop();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [togglePlayPause, playNext, playPrevious, toggleShuffle, cycleLoop]);
 
   return (
     <div
@@ -50,9 +76,14 @@ export default function App() {
       style={{ backgroundImage: "url('/background-image.png')" }}
     >
       {/* Background Music Engine */}
-      {currentSong && (
-        <audio ref={audioRef} src={currentSong.audioUrl} onEnded={playNext} />
-      )}
+      <audio
+        ref={audioRef}
+        src={currentSong?.audioUrl || ""}
+        preload="metadata"
+        onEnded={handleEnded}
+        onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
+        onLoadedMetadata={(e) => setDuration(e.target.duration)}
+      />
 
       {/* Fixed Dark Overlay */}
       <div className="fixed inset-0 bg-black/55 pointer-events-none z-0" />
@@ -96,8 +127,15 @@ export default function App() {
         hasMultipleTracks={filteredSongs.length > 1}
         volume={volume}
         onVolumeChange={setVolume}
+        shuffle={shuffle}
+        onToggleShuffle={toggleShuffle}
+        loop={loop}
+        onCycleLoop={cycleLoop}
+        currentTime={currentTime}
+        duration={duration}
+        onSeek={seek}
         onTogglePlayPause={togglePlayPause}
-        onNext={playNext}
+        onNext={() => playNext()}
         onPrevious={playPrevious}
       />
     </div>

@@ -3,6 +3,7 @@
 /* Custom breakpoint for very small phones (Tailwind v4 CSS-first theme) */
 @theme {
   --breakpoint-xs: 22.5rem; /* 360px */
+  --animate-spin-slow: spin 3s linear infinite;
 }
 
 /* 

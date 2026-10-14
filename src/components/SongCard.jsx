@@ -1,15 +1,14 @@
 import React from "react";
 import { Play, Pause, Heart } from "lucide-react";
 
-export default function SongCard({
+function SongCard({
   song,
   isFavorite,
   onToggleFavorite,
-  currentSong,
+  isCurrent,
   isPlaying,
   onPlaySong,
 }) {
-  const isCurrent = currentSong?.id === song.id;
   const isCurrentPlaying = isCurrent && isPlaying;
 
   return (
@@ -35,9 +34,13 @@ export default function SongCard({
         {/* Glassmorphic play overlay */}
         <div
           onClick={() => onPlaySong(song)}
-          className={`absolute inset-0 bg-black/40 sm:bg-black/60 flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-350 cursor-pointer ${
-            isCurrentPlaying ? "opacity-100" : "opacity-0 sm:opacity-0"
-          }`}
+          className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity duration-300 cursor-pointer
+${
+  isCurrentPlaying
+    ? "opacity-100"
+    : "opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+}
+    sm:bg-black/60`}
         >
           <div className="p-3 bg-pink-600 text-white rounded-full transform scale-90 active:scale-75 sm:scale-100 sm:group-hover:scale-110 transition shadow-lg">
             {isCurrentPlaying ? (
@@ -93,3 +96,5 @@ export default function SongCard({
     </div>
   );
 }
+
+export default React.memo(SongCard);

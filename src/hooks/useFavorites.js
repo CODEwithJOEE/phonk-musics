@@ -27,6 +27,22 @@ export function useFavorites() {
     }
   }, [favorites]);
 
+  // Sync across tabs/windows: when another tab writes to the same key,
+  // mirror its value into this tab's state.
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key !== STORAGE_KEY || e.newValue === null) return;
+      try {
+        const parsed = JSON.parse(e.newValue);
+        if (Array.isArray(parsed)) setFavorites(parsed);
+      } catch {
+        // ignore corrupt values from other tabs
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
   const toggleFavorite = (songId) => {
     setFavorites((prev) =>
       prev.includes(songId)

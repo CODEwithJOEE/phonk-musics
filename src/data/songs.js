@@ -5,7 +5,7 @@ export const songs = [
   {
     id: "1",
     title: "Eu Sento Gabu!",
-    artist: "Unknown Artist",
+    artist: "PXLWYSE",
     category: "Funk Phonk",
     audioUrl: "/music-phonk/funk-phonk/eu-sento-gabu.mp3",
     coverUrl: "/images/funk-phonk/eu-sento-gabu.jpg",
@@ -13,7 +13,7 @@ export const songs = [
   {
     id: "2",
     title: "LOS VOLTAJE (Ultra Slowed)",
-    artist: "Unknown Artist",
+    artist: "Sayfalse",
     category: "Slowed",
     audioUrl: "/music-phonk/slowed/los-voltaje-ultra-slowed.mp3",
     coverUrl: "/images/slowed/los-voltaje-ultra-slowed.jpg",
@@ -21,7 +21,7 @@ export const songs = [
   {
     id: "3",
     title: "MONTAGEM ALQUIMIA",
-    artist: "Unknown Artist",
+    artist: "h6itam",
     category: "Funk Phonk",
     audioUrl: "/music-phonk/funk-phonk/montagem-alquimia.mp3",
     coverUrl: "/images/funk-phonk/montagem-alquimia.jpg",
@@ -29,7 +29,7 @@ export const songs = [
   {
     id: "4",
     title: "MONTAGEM BAILÃO",
-    artist: "Unknown Artist",
+    artist: "TheGoodVibe",
     category: "Funk Phonk",
     audioUrl: "/music-phonk/funk-phonk/montagem-bail-o.mp3",
     coverUrl: "/images/funk-phonk/montagem-bail-o.jpg",
@@ -37,7 +37,7 @@ export const songs = [
   {
     id: "5",
     title: "MONTAGEM PEGADORA (Slowed)",
-    artist: "Unknown Artist",
+    artist: "SUKA",
     category: "Slowed",
     audioUrl: "/music-phonk/slowed/montagem-pegadora-slowed.mp3",
     coverUrl: "/images/slowed/montagem-pegadora-slowed.jpg",
@@ -45,7 +45,7 @@ export const songs = [
   {
     id: "6",
     title: "MONTAGEM XONADA",
-    artist: "Unknown Artist",
+    artist: "TheGoodVibe",
     category: "Funk Phonk",
     audioUrl: "/music-phonk/funk-phonk/montagem-xonada.mp3",
     coverUrl: "/images/funk-phonk/montagem-xonada.jpg",
@@ -69,7 +69,7 @@ export const songs = [
   {
     id: "9",
     title: "PPAPTEKK (Super Slowed)",
-    artist: "Unknown Artist",
+    artist: "DIPIENS",
     category: "Hardtekk",
     audioUrl: "/music-phonk/hardtekk/ppaptekk-super-slowed.mp3",
     coverUrl: "/images/hardtekk/ppaptekk-super-slowed.jpg",
@@ -189,7 +189,7 @@ export const songs = [
   {
     id: "24",
     title: "PPAP HARDTEKK (Slowed)",
-    artist: "Unknown Artist",
+    artist: "DIPIENS",
     category: "Hardtekk",
     audioUrl: "/music-phonk/hardtekk/ppap-hardtekk-slowed.mp3",
     coverUrl: "/images/hardtekk/ppap-hardtekk-slowed.jpg",
@@ -249,6 +249,14 @@ export const songs = [
     category: "Slowed",
     audioUrl: "/music-phonk/slowed/supersonic-slowed.mp3",
     coverUrl: "/images/slowed/montagem-slowed.jpg",
+  },
+  {
+    id: "32",
+    title: "Abnormal (Slowed)",
+    artist: "DJ V12",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/abnormal-slowed.mp3",
+    coverUrl: "/images/slowed/abnormal-slowed.jpg",
   },
 ];
 

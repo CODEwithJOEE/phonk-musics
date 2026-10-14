@@ -47,28 +47,33 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // 1. INCREASE CACHE LIMIT: Audio files are large. Workbox ignores files > 2MB by default.
-        maximumFileSizeToCacheInBytes: 150 * 1024 * 1024, // 150MB allowance
-
-        // 2. FORCE PRECACHING: Tells the app to download all audio/images straight away
-        globPatterns: [
-          "**/*.{js,css,html,ico,png,svg}",
-          "music-phonk/**/*.{mp3,wav}",
-          "images/**/*.{jpg,jpeg,png}",
-        ],
-
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB — only small assets
+        globPatterns: ["**/*.{js,css,html,ico,svg}"],
+        // Don't precache music — let runtime caching handle it on demand
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith("/music-phonk/"),
             handler: "CacheFirst",
             options: {
-              cacheName: "phonk-audio",
+              cacheName: "phonk-audio-v1",
               expiration: {
-                maxEntries: 100,
+                maxEntries: 50,
                 maxAgeSeconds: 60 * 60 * 24 * 90,
+                purgeOnQuotaError: true,
               },
               cacheableResponse: { statuses: [0, 200, 206] },
-              rangeRequests: true, // Crucial for Safari and media scrubbing
+              rangeRequests: true,
+            },
+          },
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith("/images/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "phonk-covers-v1",
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 180,
+              },
             },
           },
         ],

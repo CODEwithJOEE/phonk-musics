@@ -27,7 +27,7 @@ export default function SongGrid({
           song={song}
           isFavorite={favorites.includes(song.id)}
           onToggleFavorite={onToggleFavorite}
-          currentSong={currentSong}
+          isCurrent={currentSong?.id === song.id}
           isPlaying={isPlaying}
           onPlaySong={onPlaySong}
         />
