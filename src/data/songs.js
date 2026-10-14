@@ -258,6 +258,22 @@ export const songs = [
     audioUrl: "/music-phonk/slowed/abnormal-slowed.mp3",
     coverUrl: "/images/slowed/abnormal-slowed.jpg",
   },
+  {
+    id: "33",
+    title: "Blah (Slowed)",
+    artist: "DJ V12",
+    category: "Slowed",
+    audioUrl: "/music-phonk/slowed/blah-slowed.mp3",
+    coverUrl: "/images/slowed/blah-slowed.jpg",
+  },
+  {
+    id: "34",
+    title: "Nakama",
+    artist: "DIA DELÍCIA",
+    category: "Funk Phonk",
+    audioUrl: "/music-phonk/funk-phonk/nakama.mp3",
+    coverUrl: "/images/funk-phonk/nakama.jpg",
+  },
 ];
 
 // Ordered list of categories, derived from the data above (no duplicates).
