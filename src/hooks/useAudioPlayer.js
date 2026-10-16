@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-/**
- * Fisher-Yates shuffle (in place) — unbiased, O(n).
- */
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -12,12 +9,6 @@ function shuffleArray(arr) {
   return a;
 }
 
-/**
- * Builds the active playback order.
- * - Shuffle off  → the playlist, as-is.
- * - Shuffle on   → shuffled, but the current song is hoisted to index 0
- *                  so playback continues from where the user is.
- */
 function buildQueue(playlist, shuffleOn, currentSongId) {
   if (!shuffleOn) return playlist;
   if (!currentSongId) return shuffleArray(playlist);
@@ -25,6 +16,11 @@ function buildQueue(playlist, shuffleOn, currentSongId) {
   if (!current) return shuffleArray(playlist);
   const rest = playlist.filter((s) => s.id !== currentSongId);
   return [current, ...shuffleArray(rest)];
+}
+
+function warmAudioCache(url) {
+  if (!url || !("serviceWorker" in navigator)) return;
+  fetch(url, { cache: "no-store" }).catch(() => {});
 }
 
 export function useAudioPlayer(playlist) {
@@ -39,7 +35,6 @@ export function useAudioPlayer(playlist) {
     }
   });
 
-  // loop: "off" | "on" | "one"
   const [loop, setLoop] = useState(() => {
     try {
       const saved = localStorage.getItem("phonk_loop");
@@ -61,102 +56,96 @@ export function useAudioPlayer(playlist) {
   });
 
   const audioRef = useRef(null);
+  const loadedUrlRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
-  // Counter that bumps when the shuffled queue completes a full cycle.
-  // Bumping it forces the queue memo to rebuild → fresh shuffle.
   const [shuffleEpoch, setShuffleEpoch] = useState(0);
 
   // Persist preferences
   useEffect(() => {
     try {
       localStorage.setItem("phonk_shuffle", String(shuffle));
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }, [shuffle]);
 
   useEffect(() => {
     try {
       localStorage.setItem("phonk_loop", loop);
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }, [loop]);
 
   useEffect(() => {
     try {
       localStorage.setItem("phonk_volume", volume.toString());
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   }, [volume]);
 
-  // ---- Playback order -----------------------------------------------------
+  // Intentionally NOT depending on currentSong.id — we don't want the queue
+  // to re-shuffle every time the user clicks next.
   const queue = useMemo(
     () => buildQueue(playlist, shuffle, currentSong?.id),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [playlist, shuffle, shuffleEpoch],
   );
 
-  // ---- Audio element sync -------------------------------------------------
+  // ---- Load source only when the SONG actually changes -------------------
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentSong) return;
 
-    audio.volume = volume;
-    audio.load();
+    if (loadedUrlRef.current !== currentSong.audioUrl) {
+      loadedUrlRef.current = currentSong.audioUrl;
+      audio.src = currentSong.audioUrl;
+      audio.load();
+      warmAudioCache(currentSong.audioUrl);
+    }
+
+    setCurrentTime(0);
+    setDuration(0);
+  }, [currentSong]);
+
+  // ---- Play / pause -------------------------------------------------------
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentSong) return;
 
     if (isPlaying) {
-      audio.play().catch((err) => {
-        if (err.name === "AbortError") {
-          audio.addEventListener(
-            "canplay",
-            () => audio.play().catch(() => {}),
-            { once: true },
-          );
-        } else {
-          console.warn("Playback interrupted:", err);
-        }
-      });
+      const p = audio.play();
+      if (p) {
+        p.catch((err) => {
+          // AbortError = another load/pause interrupted this play. Ignore.
+          if (err.name === "AbortError") return;
+          // Autoplay blocked.
+          if (err.name === "NotAllowedError") {
+            setIsPlaying(false);
+            return;
+          }
+          console.warn("Playback error:", err);
+        });
+      }
     } else {
       audio.pause();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying, currentSong]);
 
   // Live volume sync
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.volume = volume;
-  }, [volume, currentSong]);
+  }, [volume]);
 
-  // Preload next track — respects the active queue.
+  // ---- Preload next track (SW-cached) ------------------------------------
   useEffect(() => {
     if (!currentSong || queue.length === 0) return;
 
     const idx = queue.findIndex((s) => s.id === currentSong.id);
     const next = queue[idx + 1];
-    if (!next) return; // don't preload anything if we're at the tail
+    if (!next) return;
 
-    const preload = new Audio();
-    preload.preload = "auto";
-    preload.src = next.audioUrl;
-    preload.load();
-
-    return () => {
-      preload.src = "";
-    };
+    warmAudioCache(next.audioUrl);
   }, [currentSong, queue]);
 
-  // Reset timer when song changes
-  useEffect(() => {
-    setCurrentTime(0);
-    setDuration(0);
-  }, [currentSong]);
-
-  // ---- Controls -----------------------------------------------------------
+  // ---- Controls ----------------------------------------------------------
   const playSong = useCallback(
     (song) => {
       if (currentSong?.id === song.id) {
@@ -171,12 +160,9 @@ export function useAudioPlayer(playlist) {
 
   const playNext = useCallback(
     (opts = {}) => {
-      // opts.auto = true means it was triggered by onEnded (natural end)
       const auto = opts.auto === true;
-
       if (queue.length === 0) return;
 
-      // Repeat ONE: restart the same song (only when triggered by natural end)
       if (auto && loop === "one" && currentSong && audioRef.current) {
         audioRef.current.currentTime = 0;
         audioRef.current.play().catch(() => {});
@@ -184,7 +170,6 @@ export function useAudioPlayer(playlist) {
         return;
       }
 
-      // Single-track queue → restart the same song
       if (queue.length === 1) {
         if (audioRef.current) {
           audioRef.current.currentTime = 0;
@@ -197,8 +182,6 @@ export function useAudioPlayer(playlist) {
       const currentIndex = queue.findIndex((s) => s.id === currentSong?.id);
       const isLast = currentIndex === queue.length - 1;
 
-      // Loop OFF + we're at the last song (or current song isn't in queue
-      // and the user manually hit next → play first) → stop.
       if (auto && loop === "off" && (isLast || currentIndex === -1)) {
         setIsPlaying(false);
         return;
@@ -208,12 +191,8 @@ export function useAudioPlayer(playlist) {
       if (currentIndex !== -1 && !isLast) {
         nextIndex = currentIndex + 1;
       } else {
-        // Wrapping around
         nextIndex = 0;
-        if (shuffle) {
-          // Force a fresh shuffle for the next full cycle
-          setShuffleEpoch((n) => n + 1);
-        }
+        if (shuffle) setShuffleEpoch((n) => n + 1);
       }
 
       setCurrentSong(queue[nextIndex]);
@@ -225,7 +204,6 @@ export function useAudioPlayer(playlist) {
   const playPrevious = useCallback(() => {
     if (queue.length === 0) return;
 
-    // Single-track queue → restart
     if (queue.length === 1) {
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
@@ -236,17 +214,23 @@ export function useAudioPlayer(playlist) {
     }
 
     const currentIndex = queue.findIndex((s) => s.id === currentSong?.id);
-    const prevIndex = currentIndex > 0 ? currentIndex - 1 : queue.length - 1;
 
-    // If loop is off and we're at the very first song, restart it from 0
-    // instead of wrapping backward.
-    if (loop === "off" && currentIndex <= 0 && audioRef.current) {
+    // Current song isn't in queue → start from the top.
+    if (currentIndex === -1) {
+      setCurrentSong(queue[0]);
+      setIsPlaying(true);
+      return;
+    }
+
+    // loop off + first song → restart it.
+    if (loop === "off" && currentIndex === 0 && audioRef.current) {
       audioRef.current.currentTime = 0;
       setCurrentTime(0);
       setIsPlaying(true);
       return;
     }
 
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : queue.length - 1;
     setCurrentSong(queue[prevIndex]);
     setIsPlaying(true);
   }, [queue, currentSong, loop]);
@@ -269,15 +253,11 @@ export function useAudioPlayer(playlist) {
     setCurrentTime(time);
   }, []);
 
-  /**
-   * onEnded handler wired to the <audio> element.
-   * Delegates to playNext with auto: true so loop/repeat logic kicks in.
-   */
   const handleEnded = useCallback(() => {
     playNext({ auto: true });
   }, [playNext]);
 
-  // ---- Media Session ------------------------------------------------------
+  // ---- Media Session -----------------------------------------------------
   useEffect(() => {
     if (!("mediaSession" in navigator) || !currentSong) return;
 
@@ -292,9 +272,13 @@ export function useAudioPlayer(playlist) {
     navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false));
     navigator.mediaSession.setActionHandler("previoustrack", playPrevious);
     navigator.mediaSession.setActionHandler("nexttrack", () => playNext());
+  }, [currentSong, playNext, playPrevious]);
 
-    navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
-  }, [currentSong, isPlaying, playNext, playPrevious]);
+  useEffect(() => {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+    }
+  }, [isPlaying]);
 
   return {
     audioRef,

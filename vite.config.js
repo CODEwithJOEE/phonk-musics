@@ -8,8 +8,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.js",
       registerType: "autoUpdate",
-      // Include your main UI assets here
       includeAssets: [
         "favicon.ico",
         "icons/apple-touch-icon.png",
@@ -46,37 +48,12 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB — only small assets
-        globPatterns: ["**/*.{js,css,html,ico,svg}"],
-        // Don't precache music — let runtime caching handle it on demand
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.pathname.startsWith("/music-phonk/"),
-            handler: "CacheFirst",
-            options: {
-              cacheName: "phonk-audio-v1",
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 90,
-                purgeOnQuotaError: true,
-              },
-              cacheableResponse: { statuses: [0, 200, 206] },
-              rangeRequests: true,
-            },
-          },
-          {
-            urlPattern: ({ url }) => url.pathname.startsWith("/images/"),
-            handler: "CacheFirst",
-            options: {
-              cacheName: "phonk-covers-v1",
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 180,
-              },
-            },
-          },
-        ],
+      injectManifest: {
+        globPatterns: ["**/*.{js,css,html,ico,svg,png,jpg,jpeg,webp}"],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // only precache small assets
+      },
+      devOptions: {
+        enabled: false, // SW in dev is flaky; test with `npm run build && npm run preview`
       },
     }),
   ],

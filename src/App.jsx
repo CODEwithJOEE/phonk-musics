@@ -7,6 +7,7 @@ import SearchBar from "./components/SearchBar";
 import CategoryFilter from "./components/CategoryFilter";
 import SongGrid from "./components/SongGrid";
 import PlayerBar from "./components/PlayerBar";
+import DownloadAllButton from "./components/DownloadAllButton";
 
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -75,10 +76,8 @@ export default function App() {
       className="min-h-screen bg-zinc-950 text-zinc-100 relative pb-28 sm:pb-32 selection:bg-pink-500 selection:text-white overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: "url('/background-image.png')" }}
     >
-      {/* Background Music Engine */}
       <audio
         ref={audioRef}
-        src={currentSong?.audioUrl || ""}
         preload="metadata"
         onEnded={handleEnded}
         onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
@@ -93,7 +92,9 @@ export default function App() {
       <div className="absolute top-1/3 right-1/4 translate-x-1/2 w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] bg-purple-600/5 rounded-full blur-[150px] pointer-events-none z-0" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10">
-        <Header />
+        <Header>
+          <DownloadAllButton />
+        </Header>
 
         <SearchBar
           searchQuery={searchQuery}
